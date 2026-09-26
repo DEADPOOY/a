@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing Page</title>
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <h1 class="logo">Landing Page</h1>
+            <ul class="nav-links">
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#servicios">Servicios</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="inicio" class="hero">
+            <h2>Bienvenido a mi Landing Page</h2>
+            <p>Una pagina sencilla construida con HTML y CSS puro, publicada con GitHub Pages.</p>
+            <a class="btn" href="#servicios">Ver mas</a>
+        </section>
+
+        <section id="servicios" class="servicios">
+            <h2>Servicios</h2>
+            <div class="grid">
+                <article class="card">
+                    <h3>Diseno Web</h3>
+                    <p>Interfaces limpias, responsivas y accesibles en cualquier dispositivo.</p>
+                </article>
+                <article class="card">
+                    <h3>Desarrollo</h3>
+                    <p>Codigo mantenible con HTML, CSS y JavaScript.</p>
+                </article>
+                <article class="card">
+                    <h3>Git y GitHub</h3>
+                    <p>Versionamiento de proyectos y despliegue automatizado.</p>
+                </article>
+            </div>
+        </section>
+
+        <section id="contacto" class="contacto">
+            <h2>Contacto</h2>
+            <form id="form-contacto" novalidate>
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="nombre" placeholder="Tu nombre">
+
+                <label for="email">Correo</label>
+                <input type="email" id="email" name="email" placeholder="tu@correo.com">
+
+                <label for="mensaje">Mensaje</label>
+                <textarea id="mensaje" name="mensaje" rows="5" placeholder="Escribe tu mensaje"></textarea>
+
+                <button type="submit" class="btn">Enviar</button>
+                <p id="form-mensaje" class="form-mensaje" role="status"></p>
+            </form>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 DEADPOOY. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="./js/main.js"></script>
+</body>
+</html>
