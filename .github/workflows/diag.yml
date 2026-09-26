@@ -6,7 +6,7 @@ on:
     branches: [main]
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -14,25 +14,42 @@ jobs:
   diag:
     runs-on: ubuntu-latest
     steps:
-      - name: Info
+      - name: Sondear permisos
         run: |
-          probe() {
-            echo "### $1" >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-            echo "$2" >> $GITHUB_STEP_SUMMARY
-            echo '```' >> $GITHUB_STEP_SUMMARY
-          }
-          for ep in "GET actions/permissions" "GET pages"; do
-            path=${ep#GET }
-            code=$(curl -s -o /tmp/out -w "%{http_code}" \
+          {
+            echo "# Diagnostico de permisos"
+            echo
+            for spec in "GET actions/permissions" "GET pages" "GET pages/builds/latest"; do
+              method=${spec%% *}
+              path=${spec#* }
+              code=$(curl -s -o /tmp/out -w "%{http_code}" -X "$method" \
+                -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+                -H "Accept: application/vnd.github+json" \
+                "https://api.github.com/repos/${{ github.repository }}/$path")
+              echo "## $method $path -> $code"
+              echo '```'
+              cat /tmp/out
+              echo
+              echo '```'
+            done
+            code=$(curl -s -o /tmp/out -w "%{http_code}" -X POST \
               -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
               -H "Accept: application/vnd.github+json" \
-              "https://api.github.com/repos/${{ github.repository }}/$path")
-            probe "$ep -> $code" "$(cat /tmp/out)"
-          done
-          code=$(curl -s -o /tmp/out -w "%{http_code}" -X POST \
-            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Accept: application/vnd.github+json" \
-            -d '{"build_type":"workflow"}' \
-            "https://api.github.com/repos/${{ github.repository }}/pages")
-          probe "POST pages -> $code" "$(cat /tmp/out)"
+              -d '{"build_type":"workflow"}' \
+              "https://api.github.com/repos/${{ github.repository }}/pages")
+            echo "## POST pages -> $code"
+            echo '```'
+            cat /tmp/out
+            echo '```'
+          } > diag.md
+
+      - name: Publicar resultado
+        run: |
+          git config user.name "DEADPOOY"
+          git config user.email "jvertiza2400@alumno.ipn.mx"
+          git checkout --orphan diag
+          git rm -rf --cached . > /dev/null 2>&1 || true
+          rm -rf .github index.html css js README.md .gitignore
+          git add diag.md
+          git commit -q -m "diag"
+          git push -f origin diag
